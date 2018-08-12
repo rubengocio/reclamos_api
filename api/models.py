@@ -8,7 +8,7 @@ from users.models import Organization
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=256)
-    imagen = models.CharField(max_length=256,blank=True, null=True)
+    imagen = models.ImageField(blank=True, null=True, default=None)
     organizacion=models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
@@ -21,7 +21,7 @@ class Categoria(models.Model):
 class Subcategoria(models.Model):
     nombre = models.CharField(max_length=256)
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, blank=True, null=True, related_name='categoria')
-    imagen = models.CharField(max_length=256, blank=True, null=True)
+    imagen = models.ImageField(blank=True, null=True, default=None)
     organizacion = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):

@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+
+from api.fields import Base64ImageField
 from api.models import Categoria, Subcategoria, Reclamo
 
 class SubcategoriaSerializer(serializers.ModelSerializer):
@@ -64,7 +66,7 @@ class SubcategoriaReclamoSerializer(serializers.ModelSerializer):
 
 class ReclamoSerializer(serializers.ModelSerializer):
     subcategoria = SubcategoriaReclamoSerializer(many=False)
-    imagen = serializers.SerializerMethodField()
+    imagen = Base64ImageField()
     usuario = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
@@ -84,11 +86,6 @@ class ReclamoSerializer(serializers.ModelSerializer):
             'updated_at'
         )
 
-    def get_imagen(self, obj):
-        if obj.imagen:
-            return self.context.get('request').build_absolute_uri(obj.imagen.url)
-        else:
-            return None
 
     def create(self, validated_data):
 

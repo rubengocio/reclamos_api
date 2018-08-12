@@ -1,139 +1,64 @@
-import hashlib
-
-from django.http import Http404
-from django.shortcuts import render
-import base64
-
+# -*- coding: utf-8 -*-
 # Create your views here.
-from rest_framework.views import APIView
+from rest_framework import permissions
+from rest_framework import viewsets
 
 from api.models import Categoria, Subcategoria, Reclamo
 from api.serializers import CategoriaSerializer, SubcategoriaSerializer, ReclamoSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.files.base import ContentFile
 
-class CategoriaList(APIView):
 
-    def get(self, request, format=None):
-        categorias = Categoria.objects.all()
-        serializer = CategoriaSerializer(categorias, many=True)
+from rest_framework import serializers
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class SubcategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Subcategoria.objects.all()
+    serializer_class = SubcategoriaSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ReclamoViewSet(viewsets.ModelViewSet):
+    queryset = Reclamo.objects.all()
+    serializer_class = ReclamoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    """
+    List a queryset.
+    """
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset=queryset.filter(usuario=request.user)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = CategoriaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CategoriaDetail(APIView):
-
-    def get_object(self, pk):
-        try:
-            return Categoria.objects.get(pk=pk)
-        except Categoria.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        categoria = self.get_object(pk)
-        categoria = CategoriaSerializer(categoria)
-        return Response(categoria.data)
-
-    def put(self, request, pk, format=None):
-        categoria = self.get_object(pk)
-        serializer = CategoriaSerializer(categoria, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SubcategoriaList(APIView):
-
-    def get(self, request, pk, format=None):
-        subcategorias = Subcategoria.objects.filter(categoria__pk=pk)
-        serializer = SubcategoriaSerializer(subcategorias, many=True)
+    """
+    Retrieve a model instance.
+    """
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.usuario!=request.user:
+            raise serializers.ValidationError({'non_field_error': [u"Unauthorized"]})
+        serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = SubcategoriaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SubcategoriaDetail(APIView):
-
-    def get_object(self, pk):
-        try:
-            return Subcategoria.objects.get(pk=pk)
-        except Subcategoria.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        subcategoria = self.get_object(pk)
-        subcategoria = SubcategoriaSerializer(subcategoria)
-        return Response(subcategoria.data)
-
-    def put(self, request, pk, format=None):
-        subcategoria = self.get_object(pk)
-        serializer = SubcategoriaSerializer(subcategoria, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ReclamoList(APIView):
-
-    def get(self, request, format=None):
-        reclamos = Reclamo.objects.filter(usuario=request.user)
-        serializer = ReclamoSerializer(reclamos, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = ReclamoSerializer(data=request.data)
-        imgstr64 = serializer.initial_data.get('imagen', None)
-
-        if imgstr64:
-            format, imgstr = imgstr64.split(';base64,')
-            ext = format.split('/')[-1]
-            hash = hashlib.sha1().hexdigest()
-            data = ContentFile(base64.b64decode(imgstr), name=hash + '.' + ext)
-            serializer.initial_data['imagen'] = data
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ReclamoDetail(APIView):
-
-    def get_object(self, pk):
-        try:
-            return Reclamo.objects.get(pk=pk)
-        except Subcategoria.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        reclamo = self.get_object(pk)
-        reclamo = ReclamoSerializer(reclamo)
-        return Response(reclamo.data)
-
-    def put(self, request, pk, format=None):
-        reclamo = self.get_object(pk)
-        serializer = ReclamoSerializer(reclamo, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        reclamo = self.get_object(pk)
-        reclamo.delete()
-        return Response({ 'ok': True } ,status=status.HTTP_201_CREATED)
+    """
+    Create a model instance.
+    """
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
