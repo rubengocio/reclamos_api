@@ -18,3 +18,10 @@ venv.bak/
 **/**/media/
 **/**/migrations/
 static/
+api/__pycache__/
+reclamos_api/__pycache__/
+api/__pycache__/models.cpython-35.pyc
+api/__pycache__/serializers.cpython-35.pyc
+api/__pycache__/views.cpython-35.pyc
+reclamos_api/__pycache__/settings.cpython-35.pyc
+reclamos_api/__pycache__/urls.cpython-35.pyc
