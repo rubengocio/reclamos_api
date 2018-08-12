@@ -3,10 +3,13 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+from users.models import Organization
+
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=256)
     imagen = models.CharField(max_length=256,blank=True, null=True)
+    organizacion=models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.nombre
@@ -19,6 +22,7 @@ class Subcategoria(models.Model):
     nombre = models.CharField(max_length=256)
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, blank=True, null=True, related_name='categoria')
     imagen = models.CharField(max_length=256, blank=True, null=True)
+    organizacion = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return u'%s - %s' % (self.categoria.nombre, self.nombre)
@@ -49,6 +53,7 @@ class Reclamo(models.Model):
     coord_y = models.FloatField(blank=True, null=True)
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     estado = models.IntegerField(choices=ESTADOS_PEDIDO_CHOICES, default=NUEVO, null=True)
+    organizacion = models.ForeignKey(Organization, on_delete=models.SET_NULL, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=datetime.now())
     updated_at = models.DateTimeField(auto_now=datetime.now())
 
