@@ -3,9 +3,10 @@
 *.pot
 *.pyc
 **.pyc
-**/*.pyc
+**/**/*.pyc
 __pycache__/
-**/__pycache__/
+**/**/__pycache__/
+**/**/*.cpython-35.pyc
 .env
 .venv
 env/
@@ -14,3 +15,6 @@ ENV/
 env.bak/
 venv.bak/
 .venv/
+**/**/media/
+**/**/migrations/
+static/
