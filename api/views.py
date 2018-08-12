@@ -91,7 +91,7 @@ class ReclamoList(APIView):
 
     def get(self, request, format=None):
         reclamos = Reclamo.objects.filter(usuario=request.user)
-        serializer = ReclamoSerializer(reclamos, many=True)
+        serializer = ReclamoSerializer(reclamos, many=True, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, format=None):
