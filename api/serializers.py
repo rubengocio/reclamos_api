@@ -4,6 +4,7 @@ from rest_framework import serializers
 from api.fields import Base64ImageField
 from api.models import Categoria, Subcategoria, Reclamo
 
+
 class SubcategoriaSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -13,6 +14,7 @@ class SubcategoriaSerializer(serializers.ModelSerializer):
             'nombre',
             'imagen'
         )
+
 
 class CategoriaSerializer(serializers.ModelSerializer):
     subcategorias = serializers.SerializerMethodField()
@@ -28,7 +30,7 @@ class CategoriaSerializer(serializers.ModelSerializer):
 
     def get_subcategorias(self, obj):
         resutl = Subcategoria.objects.filter(categoria=obj)
-        serializer = SubcategoriaSerializer(resutl, many=True)
+        serializer = SubcategoriaSerializer(resutl, many=True, context=self.context)
         return serializer.data
 
 
@@ -52,6 +54,7 @@ class CategoriaReclamoSerializer(serializers.ModelSerializer):
             'nombre'
         )
 
+
 class SubcategoriaReclamoSerializer(serializers.ModelSerializer):
     categoria = CategoriaReclamoSerializer(required=False)
 
@@ -66,7 +69,7 @@ class SubcategoriaReclamoSerializer(serializers.ModelSerializer):
 
 class ReclamoSerializer(serializers.ModelSerializer):
     subcategoria = SubcategoriaReclamoSerializer(many=False)
-    imagen = Base64ImageField()
+    imagen = Base64ImageField(required=False)
     usuario = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
