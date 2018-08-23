@@ -33,12 +33,13 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify
 #    url('reclamos/$', ReclamoListView.as_view(), name='reclamos'),
 #    url('editar-reclamo/(?P<pk>[0-9]+)$', ReclamoDetailView.as_view(), name='editar-reclamo')
 #] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+from users.views import UsuarioList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^v1/', include('api.urls')),
     url(r'^v1/auth/', obtain_jwt_token),
+    url(r'^v1/usuario/$', UsuarioList.as_view()),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)
