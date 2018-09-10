@@ -40,6 +40,8 @@ urlpatterns = [
     url(r'^v1/', include('api.urls')),
     url(r'^v1/auth/', obtain_jwt_token),
     url(r'^v1/usuario/$', UsuarioList.as_view()),
+    url(r'', include('administrador.urls')),
+    url(r'^accounts/', include('users.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)

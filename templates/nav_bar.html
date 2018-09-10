@@ -1,0 +1,36 @@
+
+<aside id="aside" class="aside aside-left" data-fuse-bar="aside" data-fuse-bar-media-step="md" data-fuse-bar-position="left">
+    <div class="aside-content bg-primary-700 text-auto">
+
+        <div class="aside-toolbar">
+
+            <div class="logo">
+                <span class="logo-icon">F</span>
+                <span class="logo-text">FUSE</span>
+            </div>
+
+            <button id="toggle-fold-aside-button" type="button" class="btn btn-icon d-none d-lg-block" data-fuse-aside-toggle-fold>
+                <i class="icon icon-backburger"></i>
+            </button>
+
+        </div>
+
+        <ul class="nav flex-column custom-scrollbar" id="sidenav" data-children=".nav-item">
+
+            <li class="subheader">
+                <span>MENU</span>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link ripple " href="{% url 'reclamos' %}">
+
+                    <i class="icon s-4 icon-checkbox-marked"></i>
+
+                    <span>Reclamos</span>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+</aside>

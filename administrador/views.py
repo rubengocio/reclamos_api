@@ -1,10 +1,14 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Count
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.template import loader
+from django.urls import reverse
 from django.utils import timezone
 from datetime import timedelta
 
@@ -28,18 +32,47 @@ def index(request):
     return HttpResponse(template.render({}, request))
 
 
-class ReclamoListView(View):
+class ReclamoListView(LoginRequiredMixin, View):
 
     def get(self, request):
         template = loader.get_template('reclamos.html')
         reclamos = Reclamo.objects.all()
+        #page = request.GET.get('page', 1)
+        #paginator = Paginator(reclamos, 10)
+
+        #try:
+        #    reclamos = paginator.page(page)
+        #except PageNotAnInteger:
+        #    reclamos = paginator.page(1)
+        #except EmptyPage:
+        #    reclamos = paginator.page(paginator.num_pages)
+
         return HttpResponse(template.render({'reclamos': reclamos}, request))
 
 
 class ReclamoDetailView(View):
+    template_name = 'form-reclamo.html'
 
     def get(self, request, pk):
-        template = loader.get_template('form-reclamo.html')
         reclamo = get_object_or_404(Reclamo, pk=pk)
         form = ReclamoForm(instance=reclamo)
-        return HttpResponse(template.render({'form': form}, request))
+        context={
+            'form': form
+        }
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk=None):
+        reclamo=None
+        if pk:
+            reclamo=get_object_or_404(Reclamo, pk=pk)
+        form = ReclamoForm(data=request.POST, instance=reclamo)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('reclamos'))
+
+        context={
+            'form':form
+        }
+        return render(request, self.template_name, context)

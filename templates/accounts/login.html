@@ -1,0 +1,100 @@
+{% load static %}
+<html lang="en-us">
+
+<head>
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700italic,700,900,900italic" rel="stylesheet">
+
+    <!-- STYLESHEETS -->
+    <style type="text/css">
+            [fuse-cloak],
+            .fuse-cloak {
+                display: none !important;
+            }
+        </style>
+
+    <!-- Icons.css -->
+    <link type="text/css" rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Animate.css -->
+    <link type="text/css" rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+     <!-- Fuse Html -->
+    <link type="text/css" rel="stylesheet" href="{% static 'css/fuse-html.min.css' %}" />
+    <!-- Main CSS -->
+    <link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}">
+    <!-- / STYLESHEETS -->
+
+    <!-- JAVASCRIPT -->
+   <!-- Mobile Detect -->
+    <script type="text/javascript" src="{% static 'js/mobile-detect.min.js' %}"></script>
+    <!-- Perfect Scrollbar -->
+   </head>
+
+<body class="layout layout-vertical layout-left-navigation layout-below-toolbar layout-below-footer">
+    <main>
+        <div id="wrapper">
+
+            <div class="content-wrapper">
+                <div class="content custom-scrollbar">
+
+                    <div id="login" class="p-8">
+
+                        <div class="form-wrapper md-elevation-8 p-8">
+
+                            <div class="logo bg-secondary">
+                                <span>F</span>
+                            </div>
+
+                            <div class="title mt-4 mb-8">Log in to your account</div>
+
+                            <form novalidate method="post">
+                                {% csrf_token %}
+                                <div class="form-group mb-4">
+                                    <input type="email" class="form-control" id="id_username" name="username" aria-describedby="emailHelp" placeholder=" " />
+                                    <label for="id_username">Email address</label>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <input type="password" class="form-control" id="id_password" name="password" placeholder="Password" />
+                                    <label for="id_password">Password</label>
+                                </div>
+
+                                <div class="remember-forgot-password row no-gutters align-items-center justify-content-between pt-4">
+
+                                    <div class="form-check remember-me mb-4">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" aria-label="Remember Me" />
+                                            <span class="checkbox-icon"></span>
+                                            <span class="form-check-description">Remember Me</span>
+                                        </label>
+                                    </div>
+
+                                    <a href="#" class="forgot-password text-secondary mb-4">Forgot Password?</a>
+                                </div>
+
+                                <button type="submit" class="submit-button btn btn-block btn-secondary my-4 mx-auto" aria-label="LOG IN">
+                                    LOG IN
+                                </button>
+
+                            </form>
+
+                            <div class="register d-flex flex-column flex-sm-row align-items-center justify-content-center mt-8 mb-6 mx-auto">
+                                <span class="text mr-sm-2">Don't have an account?</span>
+                                <a class="link text-secondary" href="pages-auth-register.html">Create an account</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

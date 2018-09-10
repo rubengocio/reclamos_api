@@ -1,23 +1,63 @@
 {% extends 'base.html' %}
 {% block 'body' %}
-<div class="box box-primary">
-    <div class="box">
-        <div class="content">
-            <form action="." method="post">
-                {% for field in form %}
-                    <div class="form-group">
-                        <div >
-                            <span class="text-danger la">{{ field.errors }}</span>
+<div class="content custom-scrollbar">
+    <div class="doc forms-doc page-layout simple full-width">
+        <!-- HEADER -->
+        <div class="page-header bg-primary text-auto p-6 row no-gutters align-items-center justify-content-between">
+            <h1 class="doc-title h4" id="content">Reclamo</h1>
+
+        </div>
+        <!-- / HEADER -->
+        <div class="page-content p-6">
+            <div class="content container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="tab-pane fade show active" id="basic-info-tab-pane" role="tabpanel" aria-labelledby="basic-info-tab">
+                            <div class="card p-6">
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                                {{ form.non_field_errors }}
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group {% if form.subcategoria.errors %}has-danger{% endif %}">
+                                        {{ form.subcategoria }}
+                                        {{ form.subcategoria.errors }}
+                                        <label for="{{ form.subcategoria.id_for_label }}">{{ form.subcategoria.label }}</label>
+                                    </div>
+
+                                    {{ form.imagen }}
+                                    {{ form.imagen.errors }}
+
+                                    <div class="form-group {% if form.descripcion.errors %}has-danger{% endif %}">
+                                        {{ form.descripcion }}
+                                        {{ form.descripcion.errors }}
+                                        <label for="{{ form.descripcion.id_for_label }}">{{ form.descripcion.label }}</label>
+                                    </div>
+                                    <div class="form-group {% if form.calle.errors %}has-danger{% endif %}">
+                                        {{ form.calle }}
+                                        {{ form.calle.errors }}
+                                        <label for="{{ form.calle.id_for_label }}">{{ form.calle.label }}</label>
+                                    </div>
+                                    <div class="form-group {% if form.estado.errors %}has-danger{% endif %}">
+                                        {{ form.estado }}
+                                        {{ form.estado.errors }}
+                                        <label for="{{ form.estado.id_for_label }}">{{ form.estado.label }}</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary fuse-ripple-ready">Guardar</button>
+                                        <a href="{% url 'reclamos' %}" class="btn btn-light fuse-ripple-ready">Cancelar</a>
+                                    </div>
+
+                                </form>
+                            </div>
                         </div>
-                        {{ field.label_tag }}
-                        {{ field }}
+
                     </div>
-                {% endfor %}
-                <div class="text-center">
-                    <input class="btn btn-primary" type="submit" value="Guardar">
-                    <a class="btn btn-danger" href="{% url 'reclamos' %}">Cancelar</a>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
